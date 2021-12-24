@@ -1,0 +1,4 @@
+module ChocolaC {
+    umbrella "."
+    export *
+}
