@@ -1,2 +1,2 @@
 # Chocola
-iOS 13-14 GIF wallpapers
+Lightweight video wallpapers for iOS 12.2-14.8.1

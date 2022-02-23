@@ -1,9 +1,12 @@
 Package: emt.paisseon.chocola
 Name: Chocola
-Version: 1.0
-Architecture: iphoneos-arm
-Description: Video wallpapers for iOS 13-14
-Maintainer: Paisseon
 Author: Paisseon
+Maintainer: Paisseon
+Description: Lightweight video wallpapers
+Version: 0.1b
+Depends:  ${ORION}, firmware (>= 12.2), ws.hbang.common (>= 1.17), com.mrgcgamer.libgcuniversal
+Architecture: iphoneos-arm
 Section: Tweaks
-Depends: ${ORION}, firmware (>= 12.2)
+Icon: https://paisseon.github.io/icons/chocola.png
+SileoDepiction: https://paisseon.github.io/depictions/chocola.json
+Depiction: https://paisseon.github.io/depictions/ButNobodyCame.html

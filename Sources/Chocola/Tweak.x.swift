@@ -1,79 +1,107 @@
 import Orion
 import ChocolaC
-import UIKit
+import CoreGraphics
+import AVFoundation
 
-struct ChocolaGroup: HookGroup {}
+struct Main: HookGroup {}
 
-extension UIImage {
-	public static func chocola(_ data: Data) -> UIImage? {
-		guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
-			return Self(data: data)
-		} // create a cgimagesource from the gif data
-		
-		let frames: [(image: CGImage, duration: TimeInterval)] = (0 ..< CGImageSourceGetCount(source)).compactMap { index in // this creates array of frames
-			guard let image: CGImage = CGImageSourceCreateImageAtIndex(source, index, nil) else { // make cgimage from source
-				return nil
-			}
-			
-			guard let properties: [String: Any] = (CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [String: Any]) else { // get gif properties
-				return nil
-			}
-			
-			let duration: TimeInterval = max(properties["UnclampedDelayTime"] as? TimeInterval, 0.0) // get duration for the frame using unclamped delays
-			
-			return (image, duration) // return the finalised frame
-		}
-		
-		var images: [UIImage] = [] // array of images, this will include all frames
-		var duration: TimeInterval = 0.0 // get the full gif duration
-		for frame in frames {
-			let image = UIImage(cgImage: frame.image)
-			for _ in 0 ..< Int(frame.duration * 100.0) {
-				images.append(image) // add frame to the array
-			}
-			duration += frame.duration // and add the frame's duration to the animated image
-		}
-		return animatedImage(with: images, duration: round(duration * 10.0) / 10.0) // return an animated image using the gif frames
-	}
-}
-
-class Vanilla {
-	static let shared = Vanilla()
+class ChocolaController {
+	static let shared = ChocolaController()  // this synchronises the video wallpaper
+	
+	public var playerQueue = AVQueuePlayer() // the actual video player we will use
+	public var playerLayer = AVPlayerLayer() // the layer on which we host the playerQueue
+	public var isInApp     = false
+	
 	private init() {}
 	
-	func wallpaper(withBounds bounds: CGRect) -> UIImageView {
-		let image = UIImage.chocola(try! Data(contentsOf: URL(fileURLWithPath: "/var/mobile/Chocola/image.gif"))) // get the gif as an animated image
-		let imageView = UIImageView(image: image)
-		imageView.frame = bounds
-		return imageView
-	}
-}
-
-class WallpaperHook: ClassHook<UIView> {
-	static let targetName = "SBFWallpaperView"
-	typealias Group = ChocolaGroup
-	
-	func didMoveToWindow() {
-		orig.didMoveToWindow()
-		for subview in target.subviews {
-			subview.removeFromSuperview() // clear unwanted subviews, i.e. the original wallpaper
+	public func setWallpaper(_ frame: CGRect) {
+		if let videoURL    = try? URL(resolvingAliasFileAt: getVideoURLFromPrefs()) { // get video from prefs (see Tweak.h)
+			let playerItem = AVPlayerItem(url: videoURL)                              // get a player item from a file
+			playerQueue    = AVQueuePlayer(playerItem: playerItem)                    // create a queue with that item
 		}
-		target.addSubview(Vanilla.shared.wallpaper(withBounds: target.bounds)) // add our subview as a singleton to the wallpaper
+		
+		playerQueue.isMuted         = true              // muted
+		playerQueue.actionAtItemEnd = .none             // looper without a looper
+		playerLayer.player          = playerQueue       // set the player for layer
+		playerLayer.videoGravity    = .resizeAspectFill // fill the screen
+		playerLayer.frame           = frame             // size to the given frame
+		
+		try? AVAudioSession.sharedInstance().setCategory( .playback, options: .mixWithOthers) // prevent pausing when music plays
+		
+		NotificationCenter.default.addObserver(
+			self,
+			selector : #selector(playerItemDidReachEnd(notification:)),
+			name     : .AVPlayerItemDidPlayToEndTime,
+			object   : playerQueue.currentItem
+		) // observe when the video finishes...
+	}
+	
+	@objc func playerItemDidReachEnd(notification: Notification) {
+		if let playerItem = notification.object as? AVPlayerItem {
+			playerItem.seek(to: CMTime.zero, completionHandler: nil)
+		}
+	} // ...then loop it
+}
+
+class WallpaperVCHook: ClassHook<SBWallpaperViewController> {
+	typealias Group = Main
+	
+	func viewDidLoad() {
+		orig.viewDidLoad()
+		
+		ChocolaController.shared.setWallpaper(target.view.layer.bounds)     // create the wallpaper with the size of the screen
+		target.view.layer.addSublayer(ChocolaController.shared.playerLayer) // add the shared wallpaper to our layer
 	}
 }
 
-class FolderHook: ClassHook<UIView> {
-	static let targetName = "SBFolderIconImageView"
-	typealias Group = ChocolaGroup
+class SpringBoardHook: ClassHook<SpringBoard> {
+	typealias Group = Main
 	
-	func didMoveToWindow() {
-		orig.didMoveToWindow()
-		target.subviews[0].removeFromSuperview() // hide the wallpaper from folders because it gets out of sync
+	func frontDisplayDidChange(_ arg0: Any?) {           // this is called when an app is opened, including SpringBoard
+		orig.frontDisplayDidChange(arg0)
+		
+		if arg0 != nil {                                 // nil = SpringBoard
+			ChocolaController.shared.isInApp = true      // currently in an app. used for determining whether to play on lock screen
+			ChocolaController.shared.playerQueue.pause() // if the app is *not* SpringBoard, pause the player to save battery
+		} else {
+			ChocolaController.shared.isInApp = false     // not currently in an app
+			ChocolaController.shared.playerQueue.play()  // if we are showing the home screen, play it
+		}
+	}
+}
+
+class BacklightHook: ClassHook<SBBacklightController> {
+	typealias Group = Main
+	
+	func _notifyObserversDidAnimateToFactor(_ arg0: Double, source arg1: Int64) {
+		orig._notifyObserversDidAnimateToFactor(arg0, source: arg1)
+		
+		if arg0 == 0.0 {
+			ChocolaController.shared.playerQueue.pause() // pause if sleeping
+		} else {
+			ChocolaController.shared.playerQueue.play()  // play if waking
+		}
+	}
+}
+
+class WallpaperHook: ClassHook<SBFWallpaperView> {
+	typealias Group = Main
+	
+	func layoutSubviews() {
+		orig.layoutSubviews()
+		
+		for subview in target.subviews {
+			subview.removeFromSuperview() // prevent showing old wallpaper (causes icon flash bug!)
+		}
+		
+		ChocolaController.shared.playerLayer.frame = target.layer.bounds // make sure the wallpaper frame matches the current screen bounds, e.g. on rotates
 	}
 }
 
 class Chocola: Tweak {
 	required init() {
-		ChocolaGroup().activate()
+		if Preferences.shared.enabled.boolValue {
+			Main().activate()
+		}
 	}
 }
