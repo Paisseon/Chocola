@@ -10,7 +10,6 @@ class ChocolaController {
 	
 	public var playerQueue = AVQueuePlayer() // the actual video player we will use
 	public var playerLayer = AVPlayerLayer() // the layer on which we host the playerQueue
-	public var isInApp     = false
 	
 	private init() {}
 	
@@ -61,10 +60,8 @@ class SpringBoardHook: ClassHook<SpringBoard> {
 		orig.frontDisplayDidChange(arg0)
 		
 		if arg0 != nil {                                 // nil = SpringBoard
-			ChocolaController.shared.isInApp = true      // currently in an app. used for determining whether to play on lock screen
 			ChocolaController.shared.playerQueue.pause() // if the app is *not* SpringBoard, pause the player to save battery
 		} else {
-			ChocolaController.shared.isInApp = false     // not currently in an app
 			ChocolaController.shared.playerQueue.play()  // if we are showing the home screen, play it
 		}
 	}
@@ -100,7 +97,7 @@ class WallpaperHook: ClassHook<SBFWallpaperView> {
 
 class Chocola: Tweak {
 	required init() {
-		if Preferences.shared.enabled.boolValue {
+		if FileManager.default.fileExists(atPath: "/var/mobile/Library/Preferences/emt.paisseon.chocola/customVideo-VID.mp4") && Preferences.shared.enabled.boolValue {
 			Main().activate()
 		}
 	}
