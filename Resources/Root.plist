@@ -48,15 +48,152 @@
 				<key>PostNotification</key>
 				<string>emt.paisseon.chocola.prefschanged</string>
 				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<true/>
+				<key>defaults</key>
+				<string>emt.paisseon.chocola</string>
+				<key>key</key>
+				<string>mute</string>
+				<key>label</key>
+				<string>Mute</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.chocola.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<true/>
+				<key>defaults</key>
+				<string>emt.paisseon.chocola</string>
+				<key>key</key>
+				<string>lpmPause</string>
+				<key>label</key>
+				<string>Pause on LPM</string>
+			</dict>
+			
+			<!-- shared wallpaper settings -->
+			
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>label</key>
+				<string>Shared</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.chocola.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<true/>
+				<key>defaults</key>
+				<string>emt.paisseon.chocola</string>
+				<key>key</key>
+				<string>sync</string>
+				<key>label</key>
+				<string>Enable Shared Wallpaper</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.chocola.prefschanged</string>
+				<key>cell</key>
 				<string>PSLinkCell</string>
 				<key>cellClass</key>
 				<string>GcImagePickerCell</string>
 				<key>label</key>
-				<string>Custom Video</string>
+				<string>Shared Video</string>
 				<key>defaults</key>
 				<string>emt.paisseon.chocola</string>
 				<key>key</key>
 				<string>customVideo</string>
+				<key>usesPhotos</key>
+				<false/>
+				<key>usesVideos</key>
+				<true/>
+				<key>videoQuality</key>
+				<integer>0</integer>
+			</dict>
+			
+			<!-- lockscreen wallpaper settings -->
+			
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>label</key>
+				<string>Lockscreen</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.chocola.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<false/>
+				<key>defaults</key>
+				<string>emt.paisseon.chocola</string>
+				<key>key</key>
+				<string>lockscreen</string>
+				<key>label</key>
+				<string>Enable Lockscreen</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.chocola.prefschanged</string>
+				<key>cell</key>
+				<string>PSLinkCell</string>
+				<key>cellClass</key>
+				<string>GcImagePickerCell</string>
+				<key>label</key>
+				<string>Lockscreen Video</string>
+				<key>defaults</key>
+				<string>emt.paisseon.chocola</string>
+				<key>key</key>
+				<string>lsVideo</string>
+				<key>usesPhotos</key>
+				<false/>
+				<key>usesVideos</key>
+				<true/>
+				<key>videoQuality</key>
+				<integer>0</integer>
+			</dict>
+			
+			<!-- homescreen wallpaper settings -->
+			
+			<dict>
+				<key>cell</key>
+				<string>PSGroupCell</string>
+				<key>label</key>
+				<string>Homescreen</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.chocola.prefschanged</string>
+				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>default</key>
+				<false/>
+				<key>defaults</key>
+				<string>emt.paisseon.chocola</string>
+				<key>key</key>
+				<string>homescreen</string>
+				<key>label</key>
+				<string>Enable Homescreen</string>
+			</dict>
+			<dict>
+				<key>PostNotification</key>
+				<string>emt.paisseon.chocola.prefschanged</string>
+				<key>cell</key>
+				<string>PSLinkCell</string>
+				<key>cellClass</key>
+				<string>GcImagePickerCell</string>
+				<key>label</key>
+				<string>Homescreen Video</string>
+				<key>defaults</key>
+				<string>emt.paisseon.chocola</string>
+				<key>key</key>
+				<string>hsVideo</string>
 				<key>usesPhotos</key>
 				<false/>
 				<key>usesVideos</key>

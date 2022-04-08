@@ -18,7 +18,3 @@
 @interface SBBacklightController : NSObject
 - (void) _notifyObserversDidAnimateToFactor: (double) arg0 source: (long long) arg1;
 @end
-
-NSURL *getVideoURLFromPrefs() {
-	return [GcImagePickerUtils videoURLFromDefaults:@"emt.paisseon.chocola" withKey:@"customVideo"];
-}
