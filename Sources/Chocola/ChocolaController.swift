@@ -13,9 +13,11 @@ class ChocolaController {
 	public var playerQueueHS = AVQueuePlayer()
 	public var playerLayerHS = AVPlayerLayer()
 	
-	public var isSetMain     = true
+	public var isSetMain     = false
 	public var isSetLock     = false
 	public var isSetHome     = false
+	
+	public var isLPMPaused   = false
 	
 	private init() {}
 	
@@ -32,10 +34,10 @@ class ChocolaController {
 		if Preferences.shared.mute.boolValue {
 			playerQueue.isMuted     = true
 			playerQueue.volume      = 0.0
+			try? AVAudioSession.sharedInstance().setCategory( .playback, options: .mixWithOthers) // prevent pausing when music plays
 		}
 		
 		isSetMain = true
-		try? AVAudioSession.sharedInstance().setCategory( .playback, options: .mixWithOthers) // prevent pausing when music plays
 		ChocolaController.shared.playerQueue.play()
 		
 		NotificationCenter.default.addObserver(
@@ -47,8 +49,6 @@ class ChocolaController {
 	}
 	
 	public func setSeparateWallpaper(withFrame frame: CGRect, onLockscreen isLS: Bool) {
-		try? AVAudioSession.sharedInstance().setCategory( .playback, options: .mixWithOthers)
-		
 		if isLS {
 			let videoURL                  = URL(fileURLWithPath: "/var/mobile/Library/Preferences/emt.paisseon.chocola/lsVideo-VID.mp4")
 			let playerItem                = AVPlayerItem(url: videoURL)
@@ -62,6 +62,7 @@ class ChocolaController {
 			if Preferences.shared.mute.boolValue {
 				playerQueueLS.isMuted     = true
 				playerQueueLS.volume      = 0.0
+				try? AVAudioSession.sharedInstance().setCategory( .playback, options: .mixWithOthers)
 			}
 			
 			isSetLock = true
@@ -86,6 +87,7 @@ class ChocolaController {
 			if Preferences.shared.mute.boolValue {
 				playerQueueHS.isMuted     = true
 				playerQueueHS.volume      = 0.0
+				try? AVAudioSession.sharedInstance().setCategory( .playback, options: .mixWithOthers)
 			}
 			
 			isSetHome = true

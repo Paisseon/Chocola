@@ -3,7 +3,7 @@ import ChocolaC
 import CoreGraphics
 
 class HomeHook: ClassHook<UIView> {
-	static let targetName = "SBIconContentView"
+	static let targetName = "SBHomeScreenView"
 	typealias Group       = Home
 	
 	func didMoveToWindow() {

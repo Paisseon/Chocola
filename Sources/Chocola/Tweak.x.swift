@@ -52,7 +52,7 @@ class SpringBoardHook: ClassHook<SpringBoard> {
 					ChocolaController.shared.playerQueueHS.pause()
 				}
 			}
-		} else {
+		} else if !ChocolaController.shared.isLPMPaused {
 			if ChocolaController.shared.isSetMain {
 				ChocolaController.shared.playerQueue.play() // if we are showing the home screen, play it
 			} else {
@@ -86,7 +86,7 @@ class BacklightHook: ClassHook<SBBacklightController> {
 					ChocolaController.shared.playerQueueHS.pause()
 				}
 			}
-		} else {        // play if waking
+		} else if !ChocolaController.shared.isLPMPaused { // play if waking
 			if ChocolaController.shared.isSetMain {
 				ChocolaController.shared.playerQueue.play()
 			} else {
@@ -110,6 +110,8 @@ class BatteryHook: ClassHook<UIView> {
 		orig.setSaverModeActive(arg0)
 		
 		if Preferences.shared.lpmPause.boolValue {
+			ChocolaController.shared.isLPMPaused = arg0
+			
 			if ChocolaController.shared.isSetMain {
 				arg0 ? ChocolaController.shared.playerQueue.pause() : ChocolaController.shared.playerQueue.play()
 			} else {
