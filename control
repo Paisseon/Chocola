@@ -3,10 +3,10 @@ Name: Chocola
 Author: Paisseon
 Maintainer: Paisseon
 Description: Lightweight video wallpapers
-Version: 0.5b
-Depends:  ${ORION}, firmware (>= 12.2), ws.hbang.common (>= 1.17), com.mrgcgamer.libgcuniversal
+Version: 1.1
+Depends:  ${ORION}, firmware (>= 13.0), ws.hbang.common (>= 1.17), com.mrgcgamer.libgcuniversal
 Architecture: iphoneos-arm
 Section: Tweaks
 Icon: https://paisseon.github.io/icons/chocola.png
 SileoDepiction: https://paisseon.github.io/depictions/chocola.json
-Depiction: https://paisseon.github.io/depictions/ButNobodyCame.html
+Depiction: https://pinpal.github.io/Sileo-Depiction-WebViews/?json=https://paisseon.github.io/depictions/chocola.json&name=Chocola&dev=Paisseon

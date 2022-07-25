@@ -1,31 +1,51 @@
 import Cephei
 
-class Preferences {
+final class Preferences {
 	static let shared = Preferences()
 	
-	private let preferences               = HBPreferences(identifier: "emt.paisseon.chocola")
-	private(set) var enabled: ObjCBool    = true
-	private(set) var homescreen: ObjCBool = false
-	private(set) var lockscreen: ObjCBool = false
-	private(set) var mute: ObjCBool       = true
-	private(set) var sync: ObjCBool       = true
-	private(set) var lpmPause: ObjCBool   = true
+	private let preferences     = HBPreferences(identifier: "emt.paisseon.chocola")
+    
+	private(set) var enabled    = true
+	private(set) var homescreen = false
+	private(set) var lockscreen = false
+	private(set) var mute       = false
+	private(set) var sync       = false
+	private(set) var lpmPause   = false
+    private(set) var caffeine   = false
+    
+    private var enabledI    : ObjCBool = true
+    private var homescreenI : ObjCBool = false
+    private var lockscreenI : ObjCBool = false
+    private var muteI       : ObjCBool = false
+    private var syncI       : ObjCBool = false
+    private var lpmPauseI   : ObjCBool = false
+    private var caffeineI   : ObjCBool = false
 	
-	private init() { // various cephei stuff
+	private init() {
 		preferences.register(defaults: [
 			"enabled"    : true,
 			"homescreen" : false,
 			"lockscreen" : false,
-			"mute"       : true,
-			"sync"       : true,
-			"lpmPause"   : true,
+			"mute"       : false,
+			"sync"       : false,
+			"lpmPause"   : false,
+            "caffeine"   : false,
 		])
 	
-		preferences.register(_Bool: &enabled, default: true, forKey: "enabled")
-		preferences.register(_Bool: &homescreen, default: false, forKey: "homescreen")
-		preferences.register(_Bool: &lockscreen, default: false, forKey: "lockscreen")
-		preferences.register(_Bool: &mute, default: true, forKey: "mute")
-		preferences.register(_Bool: &sync, default: true, forKey: "sync")
-		preferences.register(_Bool: &lpmPause, default: true, forKey: "lpmPause")
+		preferences.register(_Bool: &enabledI,    default: true,  forKey: "enabled")
+		preferences.register(_Bool: &homescreenI, default: false, forKey: "homescreen")
+		preferences.register(_Bool: &lockscreenI, default: false, forKey: "lockscreen")
+		preferences.register(_Bool: &muteI,       default: false, forKey: "mute")
+		preferences.register(_Bool: &syncI,       default: false, forKey: "sync")
+		preferences.register(_Bool: &lpmPauseI,   default: false, forKey: "lpmPause")
+        preferences.register(_Bool: &caffeineI,   default: false, forKey: "caffeine")
+        
+        enabled    = enabledI.boolValue
+        homescreen = homescreenI.boolValue
+        lockscreen = lockscreenI.boolValue
+        mute       = muteI.boolValue
+        sync       = syncI.boolValue
+        lpmPause   = lpmPauseI.boolValue
+        caffeine   = caffeineI.boolValue
 	}
 }

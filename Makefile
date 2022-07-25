@@ -1,6 +1,6 @@
 SYSROOT = $(THEOS)/sdks/iPhoneOS14.4.sdk/
 ARCHS = arm64 arm64e
-TARGET = iphone:clang:latest:12.2
+TARGET = iphone:clang:latest:13.0
 
 FINALPACKAGE = 1
 DEBUG = 0
